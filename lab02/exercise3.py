@@ -17,28 +17,29 @@ def mInv(a, m):
     if g != 1:                                                              #ha nem akkor nem letezik modularis inverz
         raise Exception('Modular inverse does not exist!!!')
     else:
-        return x % m                                                        #ha igen, akkor akkor return x, azaz inverz szam modulo m
+        return x % m                                                        #ha igen, akkor return x, azaz inverz szam modulo m
 
 
-def affine_decrypt(ciphertext, a, b):                                       #a es b a kulcsok
+def affine_decrypt(text, a, b):                                             #a es b a kulcsok
     plaintext = ""
     a_inv = mInv(a, 26)                                                  #'a' kulcs modularis inverzenek meghatarozasa
-    for char in ciphertext:                                                 #vegigmegyek a szovegen, minden kartakert visszafejtve
+    for char in text:                                                       #vegigmegyek a szovegen, minden kartakert visszafejtve
         if char.isalpha():                                                  #ha betu akkor visszafejtes tortenik
-            if char.isupper():                                              #ha nagybetu, akkor a karakter kodjat atalakitom az angol abc-ben ord(char) - ord('A'), majd levonom az 'A' kodjat, ami megadja hanyadik helyen van az adott karakter az angol abc-ben
+                                                          #ha nagybetu, akkor a karakter kodjat atalakitom az angol abc-ben ord(char) - ord('A'), majd levonom az 'A' kodjat, ami megadja hanyadik helyen van az adott karakter az angol abc-ben
                 plaintext += chr(((a_inv * (ord(char) - ord('A') - b)) % 26) + ord('A'))
-            else:                                                           #ugyanaz kisbetuk eseteben is
-                plaintext += chr(((a_inv * (ord(char) - ord('a') - b)) % 26) + ord('a'))        #mind2 esetben az a_inv * ord(char - .... - b resz adja meg a visszafejtett poziciot, es a % 26 muvelettel biztositjuk, h az eredemeny az angol abc-ben maradjon
+                                                                  #ugyanaz kisbetuk eseteben is
+                       #mind2 esetben az a_inv * ord(char - .... - b resz adja meg a visszafejtett poziciot, es a % 26 muvelettel biztositjuk, h az eredemeny az angol abc-ben maradjon
         else:
             plaintext += char                                               #vegul az 'A' vagy 'a' kodjat hozzaadjuk a vegeredmenyhez
     return plaintext
 
 
-def comb_affine(ciphertext):                                                #vegigmegy az osszes lehetseges a es b kulcskombinaciokon
+def comb_affine(text):                                                      #vegigmegy az osszes lehetseges a es b kulcskombinaciokon
     for a in range(1, 26):                                                  #'a' kulcsok (1-25 kozott)
         if extEuclid(a, 26)[0] == 1:                                     #extEuclid fgv-el hatarozom meg az 'a' kulcs es a 26 lnko-jat.
-            for b in range(26):                                             #'b' kulcsok (0-25 kozott)
-                decrypted_text = affine_decrypt(ciphertext, a, b)
+            for b in range(26):
+                                                                            #'b' kulcsok (0-25 kozott)
+                decrypted_text = affine_decrypt(text, a, b)
                 print(f"a={a}, b={b}: {decrypted_text}")
 
 
